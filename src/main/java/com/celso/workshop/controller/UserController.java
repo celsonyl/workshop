@@ -4,6 +4,7 @@ import com.celso.workshop.controller.model.UserRequest;
 import com.celso.workshop.controller.model.UserResponse;
 import com.celso.workshop.translator.UserMapperImpl;
 import com.celso.workshop.usecase.CreateUserUsecase;
+import com.celso.workshop.usecase.GetAllUsersUsecase;
 import com.celso.workshop.usecase.GetUserByIdUsecase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -20,12 +23,22 @@ public class UserController {
     private CreateUserUsecase createUserUsecase;
     @Autowired
     private GetUserByIdUsecase getUserByIdUsecase;
+    @Autowired
+    private GetAllUsersUsecase getAllUsersUsecase;
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable String id) {
         var userDomain = getUserByIdUsecase.exeucte(id);
 
         return ResponseEntity.ok().body(new UserMapperImpl().userDomainToResponse(userDomain));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        var users = getAllUsersUsecase.execute();
+        return ResponseEntity.ok().body(users.stream()
+                .map(new UserMapperImpl()::userDomainToResponse)
+                .collect(Collectors.toList()));
     }
 
     @PostMapping
