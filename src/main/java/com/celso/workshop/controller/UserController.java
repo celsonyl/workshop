@@ -4,6 +4,7 @@ import com.celso.workshop.controller.model.UserRequest;
 import com.celso.workshop.controller.model.UserResponse;
 import com.celso.workshop.translator.UserMapperImpl;
 import com.celso.workshop.usecase.CreateUserUsecase;
+import com.celso.workshop.usecase.DeleteUserByIdUsecase;
 import com.celso.workshop.usecase.GetAllUsersUsecase;
 import com.celso.workshop.usecase.GetUserByIdUsecase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class UserController {
     private GetUserByIdUsecase getUserByIdUsecase;
     @Autowired
     private GetAllUsersUsecase getAllUsersUsecase;
+    @Autowired
+    private DeleteUserByIdUsecase deleteUserByIdUsecase;
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable String id) {
@@ -47,5 +50,13 @@ public class UserController {
         URI uri = uriComponentsBuilder.path("/user/{id}").buildAndExpand(userSaved.getId()).toUri();
 
         return ResponseEntity.created(uri).build();
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable String id) {
+        var user = getUserByIdUsecase.exeucte(id);
+        deleteUserByIdUsecase.execute(user.getId());
+
+        return ResponseEntity.noContent().build();
     }
 }
