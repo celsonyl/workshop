@@ -3,10 +3,7 @@ package com.celso.workshop.controller;
 import com.celso.workshop.controller.model.UserRequest;
 import com.celso.workshop.controller.model.UserResponse;
 import com.celso.workshop.translator.UserMapperImpl;
-import com.celso.workshop.usecase.CreateUserUsecase;
-import com.celso.workshop.usecase.DeleteUserByIdUsecase;
-import com.celso.workshop.usecase.GetAllUsersUsecase;
-import com.celso.workshop.usecase.GetUserByIdUsecase;
+import com.celso.workshop.usecase.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +25,8 @@ public class UserController {
     private GetAllUsersUsecase getAllUsersUsecase;
     @Autowired
     private DeleteUserByIdUsecase deleteUserByIdUsecase;
+    @Autowired
+    private UpdateUserUsecase updateUserUsecase;
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable String id) {
@@ -50,6 +49,12 @@ public class UserController {
         URI uri = uriComponentsBuilder.path("/user/{id}").buildAndExpand(userSaved.getId()).toUri();
 
         return ResponseEntity.created(uri).build();
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Void> updateUser(@PathVariable String id, @RequestBody UserRequest userRequest) {
+        updateUserUsecase.execute(id, new UserMapperImpl().userRequestToDomain(userRequest));
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(value = "/{id}")
