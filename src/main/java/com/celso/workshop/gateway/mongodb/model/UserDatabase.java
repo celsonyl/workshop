@@ -2,6 +2,7 @@ package com.celso.workshop.gateway.mongodb.model;
 
 import lombok.Builder;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
@@ -17,12 +18,14 @@ public class UserDatabase implements Serializable {
     private String id;
     private String name;
     private String email;
-    private List<?> posts = new ArrayList<>();
+
+    @DBRef(lazy = true)
+    private List<PostDatabase> posts = new ArrayList<>();
 
     public UserDatabase() {
     }
 
-    public UserDatabase(String id, String name, String email, List<?> posts) {
+    public UserDatabase(String id, String name, String email, List<PostDatabase> posts) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -53,11 +56,11 @@ public class UserDatabase implements Serializable {
         this.email = email;
     }
 
-    public List<?> getPosts() {
+    public List<PostDatabase> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<?> posts) {
+    public void setPosts(List<PostDatabase> posts) {
         this.posts = posts;
     }
 

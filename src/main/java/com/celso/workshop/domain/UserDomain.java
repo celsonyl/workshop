@@ -12,12 +12,12 @@ public class UserDomain implements Serializable {
     private String id;
     private String name;
     private String email;
-    private List<?> posts = new ArrayList<>();
+    private List<PostDomain> posts = new ArrayList<>();
 
     public UserDomain() {
     }
 
-    public UserDomain(String id, String name, String email, List<?> posts) {
+    public UserDomain(String id, String name, String email, List<PostDomain> posts) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -48,11 +48,11 @@ public class UserDomain implements Serializable {
         this.email = email;
     }
 
-    public List<?> getPosts() {
+    public List<PostDomain> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<?> posts) {
+    public void setPosts(List<PostDomain> posts) {
         this.posts = posts;
     }
 }
