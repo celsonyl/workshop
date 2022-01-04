@@ -65,4 +65,11 @@ public class PostMapper {
                 .userDomain(userDomain)
                 .build();
     }
+
+    public PostDomain postRequestUpdateToDomain(PostRequest postRequest) {
+        return PostDomain.builder()
+                .title(postRequest.getTitle())
+                .body(postRequest.getBody())
+                .build();
+    }
 }

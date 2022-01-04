@@ -5,6 +5,7 @@ import com.celso.workshop.controller.model.PostResponse;
 import com.celso.workshop.translator.PostMapper;
 import com.celso.workshop.usecase.CreatePostUsecase;
 import com.celso.workshop.usecase.GetPostByIdUsecase;
+import com.celso.workshop.usecase.UpdatePostUsecase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,8 @@ public class PostController {
     private CreatePostUsecase createPostUsecase;
     @Autowired
     private GetPostByIdUsecase getPostByIdUsecase;
+    @Autowired
+    private UpdatePostUsecase updatePostUsecase;
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable String id) {
@@ -34,5 +37,12 @@ public class PostController {
         URI uri = uriComponentsBuilder.path("/post/{id}").buildAndExpand(post.getId()).toUri();
 
         return ResponseEntity.created(uri).build();
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Void> updatePost(@PathVariable String id, @RequestBody PostRequest postRequest) {
+        var postDomain = new PostMapper().postRequestUpdateToDomain(postRequest);
+        updatePostUsecase.execute(id, postDomain);
+        return ResponseEntity.noContent().build();
     }
 }
