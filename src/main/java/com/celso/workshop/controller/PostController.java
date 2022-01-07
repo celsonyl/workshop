@@ -3,10 +3,7 @@ package com.celso.workshop.controller;
 import com.celso.workshop.controller.model.PostRequest;
 import com.celso.workshop.controller.model.PostResponse;
 import com.celso.workshop.translator.PostMapper;
-import com.celso.workshop.usecase.CreatePostUsecase;
-import com.celso.workshop.usecase.GetAllPostsUsecase;
-import com.celso.workshop.usecase.GetPostByIdUsecase;
-import com.celso.workshop.usecase.UpdatePostUsecase;
+import com.celso.workshop.usecase.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +25,8 @@ public class PostController {
     private UpdatePostUsecase updatePostUsecase;
     @Autowired
     private GetAllPostsUsecase getAllPostsUsecase;
+    @Autowired
+    private GetAllPostsByUserIdUsecase getAllPostsByUserIdUsecase;
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable String id) {
@@ -47,7 +46,11 @@ public class PostController {
 
     @GetMapping(value = "/user/{id}")
     public ResponseEntity<List<PostResponse>> getAllPostsByUserId(@PathVariable String id) {
-        return null;
+        var posts = getAllPostsByUserIdUsecase.execute(id);
+
+        return ResponseEntity.ok().body(posts.stream()
+                .map(new PostMapper()::postDomainToResponse)
+                .collect(Collectors.toList()));
     }
 
     @PostMapping
